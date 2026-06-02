@@ -35,12 +35,14 @@ button {
   box-shadow:4px 4px 0 #000;
   background:#1a0000;
   font-family:'Press Start 2P', monospace;
-  font-size:8px;
+  font-size:9px;
   color:#eeddff;
-  padding:12px 16px;
+  padding:14px 20px;
+  min-height:48px;
   cursor:pointer;
   border-radius:0;
   transition:background 0.05s, color 0.05s;
+  touch-action:manipulation;
 }
 button:hover { background:#aa0000; color:#ffcc00; }
 button:active { transform:translate(4px,4px); box-shadow:none; }
@@ -173,9 +175,9 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 .ct-stat.hp { border-color:#ff2200; color:#ff2200; }
 .ct-stat.gold { border-color:#ffcc00; color:#ffcc00; }
 #combat-area {
-  flex:1; display:flex; align-items:center; justify-content:space-around;
+  flex:1; display:flex; flex-direction:column; align-items:center;
   padding:8px 16px; position:relative;
-  min-height:0;
+  min-height:0; gap:8px;
 }
 .combatant { display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; }
 .px-sprite {
@@ -254,14 +256,19 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 
 /* Combat log */
 #combat-log {
-  position:absolute; left:8px; bottom:195px;
-  width:160px; max-height:100px;
+  position:absolute;
+  left:6px;
+  top:6px;
+  width:150px;
+  max-height:80px;
   overflow-y:auto;
-  background:#050000;
-  border:2px solid #333;
+  background:rgba(5,0,0,0.85);
+  border:2px solid #330000;
   padding:4px;
-  font-size:6px; color:#664444;
+  font-size:5px;
+  color:#664444;
   pointer-events:none;
+  z-index:1;
 }
 .log-entry { padding:1px 0; border-bottom:1px solid #1a0000; }
 
@@ -301,6 +308,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   transition:transform 0.12s;
   position:relative; margin:0 -5px; flex-shrink:0;
   border-radius:0;
+  touch-action:manipulation;
 }
 .card:hover { transform:translateY(-22px) scale(1.06); z-index:10; }
 .card.selected { transform:translateY(-30px) scale(1.08); border-color:#ffcc00; z-index:11; }
@@ -362,7 +370,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 #pile-info { display:flex; gap:6px; }
 .pile-btn { font-size:6px; padding:6px 8px; border-color:#333; background:#050000; }
 .pile-btn:hover { background:#1a0000; border-color:#aa0000; color:#ffcc00; }
-#end-turn-btn { border-color:#00aa33; font-size:8px; padding:10px 14px; }
+#end-turn-btn { border-color:#00aa33; font-size:11px; padding:16px 28px; min-height:56px; letter-spacing:1px; }
 #end-turn-btn:hover { background:#00aa33; color:#000; }
 
 /* REWARD SCREEN */
@@ -557,6 +565,26 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 ::-webkit-scrollbar-track { background:#050000; }
 ::-webkit-scrollbar-thumb { background:#aa0000; }
 
+/* Enemy units (multi-enemy) */
+.enemy-unit {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:8px;
+  border:4px solid transparent;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.enemy-unit.targeted {
+  border-color:#ff2200;
+  box-shadow:4px 4px 0 #000, 0 0 8px #ff220055;
+}
+.enemy-unit.dead {
+  opacity:0.2;
+  pointer-events:none;
+}
+
 /* Mobile */
 @media (max-width:600px) {
   #title-main { font-size:20px; }
@@ -598,6 +626,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
       <div class="map-stat gold-stat" id="map-gold">[G] 0</div>
       <div class="map-stat deck-stat" id="map-deck">[DECK] 10枚</div>
     </div>
+    <button onclick="showDeckView()" style="font-size:7px;padding:8px 12px;min-height:36px;">デッキ確認</button>
   </div>
   <div id="map-container">
     <div id="map-canvas"></div>
@@ -614,53 +643,24 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
     </div>
   </div>
   <div id="combat-area">
-    <!-- Player -->
-    <div class="combatant" id="player-combatant">
-      <div class="status-row" id="player-status-badges"></div>
-      <div class="px-sprite" id="player-sprite">
-        <pre id="player-art">  ████
- ██▓▓██
-████████
-██▓▓▓▓██
- ██████
- ██  ██
-███  ███</pre>
-      </div>
-      <div class="combatant-name">探求者</div>
-      <div class="hp-bar-wrap"><div class="hp-bar" id="player-hp-bar"></div></div>
-      <div class="hp-text" id="player-hp-text">80/80</div>
-      <div id="player-block-badge" class="block-display" style="display:none">
-        <span class="block-label">[DEF] </span><span id="player-block-val">0</span>
-      </div>
+    <div id="combat-log"></div>
+    <!-- Enemies top area -->
+    <div id="enemies-area" style="display:flex;gap:12px;align-items:flex-end;justify-content:center;flex:1;width:100%;padding:8px 0;">
+      <!-- Dynamically populated by renderEnemies() -->
     </div>
-    <!-- Center -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <!-- Player stats bar -->
+    <div id="player-stats-bar" style="display:flex;align-items:center;gap:16px;width:100%;background:#110000;border:4px solid #aa0000;box-shadow:4px 4px 0 #000;padding:8px 16px;">
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+        <div style="font-size:7px;color:#664444;">探求者</div>
+        <div class="hp-bar-wrap" style="width:100%;"><div class="hp-bar" id="player-hp-bar" style="width:100%"></div></div>
+        <div class="hp-text" id="player-hp-text">80/80</div>
+      </div>
+      <div id="player-block-badge" class="block-display" style="display:none;">[DEF] <span id="player-block-val">0</span></div>
+      <div id="player-status-badges" class="status-row"></div>
       <div id="energy-display">
         <div class="energy-label">[ENERGY]</div>
-        <div class="energy-val"><span id="energy-cur">3</span><span style="font-size:10px;color:#664444;">/<span id="energy-max-val">3</span></span></div>
+        <div class="energy-val"><span id="energy-cur">3</span><span style="font-size:8px;color:#664444;">/<span id="energy-max-val">3</span></span></div>
       </div>
-      <div id="combat-log"></div>
-    </div>
-    <!-- Enemy -->
-    <div class="combatant" id="enemy-combatant">
-      <div id="enemy-intent" class="intent-box">
-        <span class="intent-icon">[ATK]</span><span id="intent-text">？</span>
-      </div>
-      <div class="px-sprite" id="enemy-sprite" onclick="enemyClicked()">
-        <pre id="enemy-art">  ▓▓▓▓
- ▓░░░░▓
-▓░░░░░░▓
-▓░  ░░░▓
- ▓▓░░▓▓
-  ▓▓▓▓  </pre>
-      </div>
-      <div class="combatant-name" id="enemy-name-display">敵</div>
-      <div class="hp-bar-wrap"><div class="hp-bar" id="enemy-hp-bar"></div></div>
-      <div class="hp-text" id="enemy-hp-text">?/?</div>
-      <div id="enemy-block-badge" class="block-display" style="display:none">
-        <span class="block-label">[DEF] </span><span id="enemy-block-val">0</span>
-      </div>
-      <div class="status-row" id="enemy-status-badges"></div>
     </div>
     <div id="boss-lore"></div>
   </div>
@@ -769,6 +769,24 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   <h3 id="pile-viewer-title">山札</h3>
   <div id="pile-viewer-list"></div>
   <button class="close-btn" onclick="closePileViewer()">閉じる</button>
+</div>
+
+<!-- DECK VIEW OVERLAY -->
+<div id="deck-view-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:400;flex-direction:column;align-items:center;padding:20px;overflow-y:auto;">
+  <h3 style="color:#ffcc00;font-size:12px;margin-bottom:16px;text-shadow:4px 4px 0 #000;">デッキ一覧 (<span id="deck-count-display">0</span>枚)</h3>
+  <div id="deck-view-cards" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:700px;"></div>
+  <button onclick="hideDeckView()" style="margin-top:20px;border-color:#cc0000;">閉じる</button>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:450;align-items:center;justify-content:center;">
+  <div style="background:#1a0000;border:4px solid #aa0000;box-shadow:8px 8px 0 #000;padding:24px 28px;max-width:320px;text-align:center;">
+    <div id="confirm-msg" style="font-size:9px;color:#eeddff;line-height:2;margin-bottom:20px;"></div>
+    <div style="display:flex;gap:16px;justify-content:center;">
+      <button id="confirm-yes" style="border-color:#00aa33;color:#00aa33;min-width:80px;">はい</button>
+      <button id="confirm-no" style="border-color:#cc0000;color:#ff4444;min-width:80px;">いいえ</button>
+    </div>
+  </div>
 </div>
 
 <!-- MSG OVERLAY -->
@@ -918,7 +936,7 @@ const CARD_DB = {
     effect(gs){ dealDamage(gs,6); gs.discardPile.push(cloneCard(CARD_DB.anger)); } },
   cleave:{ id:'cleave', name:'斬撃', type:'attack', cost:1,
     desc:'全敵に8ダメージ', flavor:'一薙ぎで幻想を断ち切れ', upgraded:false,
-    effect(gs){ dealDamage(gs,8); } },
+    effect(gs){ gs.enemies.forEach(e=>{ if(e.hp>0) dealDamageToTarget(gs,e,8); }); } },
   clothesline:{ id:'clothesline', name:'首投げ', type:'attack', cost:2,
     desc:'12ダメージ + 弱体2ターン', flavor:'仮面を剥ぎ取れ。その下にあるのは——', upgraded:false,
     effect(gs){ dealDamage(gs,12); applyStatus(gs.enemy,'weak',2); } },
@@ -973,7 +991,7 @@ const UPGRADE_MAP = {
   heavyStrike:{ desc:'17ダメージを与える', effect(gs){ dealDamage(gs,17); } },
   bludgeon:{ desc:'42ダメージを与える', effect(gs){ dealDamage(gs,42); } },
   anger:{ cost:0, desc:'8ダメージ。捨て札にコピー追加', effect(gs){ dealDamage(gs,8); gs.discardPile.push(cloneCard(CARD_DB.anger)); } },
-  cleave:{ desc:'11ダメージ', effect(gs){ dealDamage(gs,11); } },
+  cleave:{ desc:'全敵に11ダメージ', effect(gs){ gs.enemies.forEach(e=>{ if(e.hp>0) dealDamageToTarget(gs,e,11); }); } },
   clothesline:{ desc:'15ダメージ + 弱体3ターン', effect(gs){ dealDamage(gs,15); applyStatus(gs.enemy,'weak',3); } },
   pommelStrike:{ desc:'10ダメージ + 2ドロー', effect(gs){ dealDamage(gs,10); drawCards(gs,2); } },
   headbutt:{ desc:'12ダメージ。捨て札1枚をデッキ上に', effect(gs){ dealDamage(gs,12); if(gs.discardPile.length>0){ openCardPicker('捨て札からカードを選ぶ（デッキ上へ）',gs.discardPile,(c,i)=>{ gs.discardPile.splice(i,1); gs.drawPile.unshift(c); closeCardPicker(); updateCombatUI(); }); } } },
@@ -996,44 +1014,55 @@ const UPGRADE_MAP = {
 // ============================================================
 const ENEMY_DB = {
   slimeSmall:{
-    name:'スライム', spriteKey:'shadowFragment', hp:[13,17], act:1, type:'normal',
+    name:'スライム', spriteKey:'shadowFragment', hp:[16,22], act:1, type:'normal',
     patterns:[
-      { name:'暗打', type:'attack', damage:5, desc:'[ATK] 5ダメージ' },
+      { name:'暗打', type:'attack', damage:9, desc:'[ATK] 9ダメージ' },
       { name:'飛び掛かり', type:'attack', damage:8, desc:'[ATK] 8ダメージ' },
+      { name:'分裂突進', type:'attack', damage:14, desc:'[ATK] 14ダメージ' },
     ],
-    ai(e){ e.nextMove=e.turn%2===0?0:1; }
+    ai(e){ e.nextMove=e.turn%3===0?0:(e.turn%3===1?1:2); }
   },
   jawWorm:{
-    name:'マンディブル', spriteKey:'memoryJaw', hp:[40,44], act:1, type:'normal',
+    name:'マンディブル', spriteKey:'memoryJaw', hp:[44,50], act:1, type:'normal',
     patterns:[
-      { name:'噛みつき', type:'attack', damage:11, desc:'[ATK] 11ダメージ' },
-      { name:'叩きつけ', type:'attack', damage:7, block:5, desc:'[ATK] 7 / [DEF] +5' },
-      { name:'咆哮', type:'buff', strength:3, desc:'[BUFF] 強さ+3' },
+      { name:'噛みつき', type:'attack', damage:16, desc:'[ATK] 16ダメージ' },
+      { name:'叩きつけ', type:'attack', damage:11, block:7, desc:'[ATK] 11 / [DEF] +7' },
+      { name:'咆哮', type:'buff', strength:5, block:8, desc:'[BUFF] 強さ+5 / [DEF] +8' },
     ],
     ai(e){ const r=Math.random(); if(r<0.45) e.nextMove=0; else if(r<0.8) e.nextMove=1; else e.nextMove=2; }
   },
   cultist:{
-    name:'ダークプリースト', spriteKey:'lostEgo', hp:[48,54], act:1, type:'normal',
+    name:'ダークプリースト', spriteKey:'lostEgo', hp:[52,60], act:1, type:'normal',
     patterns:[
-      { name:'呪文詠唱', type:'buff', strength:3, desc:'[BUFF] 儀式(強さ+3)' },
-      { name:'暗黒打', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
+      { name:'呪文詠唱', type:'buff', ritualAmount:5, desc:'[BUFF] 儀式(強さ+5)' },
+      { name:'暗黒打', type:'attack', damage:10, desc:'[ATK] 10ダメージ' },
+      { name:'呪縛', type:'attackDebuff', damage:8, effect:'weak', amount:2, desc:'[ATK] 8ダメージ 弱体2' },
     ],
-    ai(e){ e.nextMove=e.turn===0?0:1; }
+    ai(e){ e.nextMove=e.turn===0?0:(e.turn%2===1?1:2); }
   },
   louse:{
-    name:'グリーンスライム', spriteKey:'jealousyWorm', hp:[11,17], act:1, type:'normal',
+    name:'グリーンスライム', spriteKey:'jealousyWorm', hp:[15,22], act:1, type:'normal',
     patterns:[
-      { name:'噛みつき', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
+      { name:'噛みつき', type:'attack', damage:10, desc:'[ATK] 10ダメージ' },
       { name:'糸吐き', type:'debuff', weak:2, desc:'[DEBUFF] 弱体2' },
     ],
     ai(e){ e.nextMove=e.turn%3===2?1:0; }
   },
   gremlins:{
-    name:'ホブゴブリン', spriteKey:'personaGuard', hp:[82,87], act:1, type:'elite',
+    name:'ホブゴブリン', spriteKey:'personaGuard', hp:[90,98], act:1, type:'elite',
     patterns:[
-      { name:'怒号', type:'buff', strength:2, desc:'[BUFF] 強さ+2' },
-      { name:'突撃', type:'attack', damage:16, desc:'[ATK] 16ダメージ' },
-      { name:'頭蓋割り', type:'attack', damage:6, vulnerable:2, desc:'[ATK] 6 / 脆弱2' },
+      { name:'怒号', type:'buff', strength:4, desc:'[BUFF] 強さ+4' },
+      { name:'突撃', type:'attack', damage:22, desc:'[ATK] 22ダメージ' },
+      { name:'頭蓋割り', type:'attack', damage:12, effect:'vulnerable', amount:3, vulnerable:3, desc:'[ATK] 12 / 脆弱3' },
+    ],
+    ai(e){ const seq=[0,1,1,2,0,1,1]; e.nextMove=seq[e.turn%seq.length]; }
+  },
+  gremlinNob:{
+    name:'ホブゴブリン', spriteKey:'personaGuard', hp:[90,98], act:1, type:'elite',
+    patterns:[
+      { name:'怒号', type:'buff', strength:4, desc:'[BUFF] 強さ+4' },
+      { name:'突撃', type:'attack', damage:22, desc:'[ATK] 22ダメージ' },
+      { name:'頭蓋割り', type:'attack', damage:12, effect:'vulnerable', amount:3, vulnerable:3, desc:'[ATK] 12 / 脆弱3' },
     ],
     ai(e){ const seq=[0,1,1,2,0,1,1]; e.nextMove=seq[e.turn%seq.length]; }
   },
@@ -1042,44 +1071,90 @@ const ENEMY_DB = {
     patterns:[
       { name:'意識の侵食', type:'special', desc:'[SPECIAL] 粘液カード追加' },
       { name:'防御壁', type:'defend', block:15, desc:'[DEF] +15' },
-      { name:'深層打', type:'attack', damage:35, desc:'[ATK] 35ダメージ' },
+      { name:'深層打', type:'attack', damage:45, desc:'[ATK] 45ダメージ' },
+      { name:'スライム波動', type:'attack', damage:18, times:3, desc:'[ATK] 18ダメージ×3回' },
     ],
-    ai(e){ const seq=[0,1,2,1,2]; e.nextMove=seq[e.turn%seq.length]; }
+    ai(e){ const seq=[0,1,2,3,1,2,3]; e.nextMove=seq[e.turn%seq.length]; }
   },
   spikeSlime:{
-    name:'スパイクスライム', spriteKey:'anxietyBlob', hp:[28,38], act:2, type:'normal',
+    name:'スパイクスライム', spriteKey:'anxietyBlob', hp:[35,45], act:2, type:'normal',
     patterns:[
-      { name:'タックル', type:'attack', damage:8, desc:'[ATK] 8ダメージ' },
-      { name:'不安伝播', type:'attack', damage:6, desc:'[ATK] 6ダメージ+粘液' },
+      { name:'タックル', type:'attack', damage:14, desc:'[ATK] 14ダメージ' },
+      { name:'不安伝播', type:'attack', damage:12, desc:'[ATK] 12ダメージ+粘液' },
     ],
     ai(e){ e.nextMove=e.turn%2===0?0:1; }
   },
-  fungiBeast:{
-    name:'デスシュルーム', spriteKey:'complexEmotion', hp:[65,75], act:2, type:'normal',
+  fungi:{
+    name:'デスシュルーム', spriteKey:'complexEmotion', hp:[70,80], act:2, type:'normal',
     patterns:[
       { name:'胞子雲', type:'buff', strength:2, desc:'[BUFF] 強さ+2' },
-      { name:'噛みつき', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
+      { name:'噛みつき', type:'attack', damage:14, desc:'[ATK] 14ダメージ' },
+      { name:'胞子攻撃', type:'attackDebuff', damage:10, effect:'vulnerable', amount:2, desc:'[ATK] 10ダメージ 脆弱2' },
     ],
-    ai(e){ e.nextMove=e.turn%3===0?0:1; }
+    ai(e){ e.nextMove=e.turn%3===0?0:(e.turn%3===1?1:2); }
+  },
+  fungiBeast:{
+    name:'デスシュルーム', spriteKey:'complexEmotion', hp:[70,80], act:2, type:'normal',
+    patterns:[
+      { name:'胞子雲', type:'buff', strength:2, desc:'[BUFF] 強さ+2' },
+      { name:'噛みつき', type:'attack', damage:14, desc:'[ATK] 14ダメージ' },
+      { name:'胞子攻撃', type:'attackDebuff', damage:10, effect:'vulnerable', amount:2, desc:'[ATK] 10ダメージ 脆弱2' },
+    ],
+    ai(e){ e.nextMove=e.turn%3===0?0:(e.turn%3===1?1:2); }
+  },
+  champ:{
+    name:'チャンプ', spriteKey:'repressionGiant', hp:[230,240], act:2, type:'elite',
+    patterns:[
+      { name:'ビンタ', type:'attack', damage:18, desc:'[ATK] 18ダメージ' },
+      { name:'ヘビーブロー', type:'attack', damage:24, desc:'[ATK] 24ダメージ' },
+      { name:'咆哮', type:'buff', strength:3, desc:'[BUFF] 強さ+3' },
+    ],
+    ai(e){ const seq=[0,1,0,2,0,1,1]; e.nextMove=seq[e.turn%seq.length]; }
   },
   rottingHeart:{
     name:'シャドウドラゴン', spriteKey:'shadowGatekeeper', hp:[300,300], act:2, type:'boss',
     patterns:[
       { name:'弱体化', type:'debuff', weak:2, desc:'[DEBUFF] 弱体化2' },
-      { name:'血飛沫', type:'attack', damage:12, hits:2, desc:'[ATK] 12×2ダメージ' },
-      { name:'反響', type:'attack', damage:40, desc:'[ATK] 40ダメージ' },
+      { name:'血飛沫', type:'attack', damage:28, hits:2, desc:'[ATK] 28×2ダメージ' },
+      { name:'反響', type:'attack', damage:32, strength:7, desc:'[ATK] 32ダメージ 強さ+7' },
+      { name:'火球', type:'attack', damage:32, vulnerable:4, desc:'[ATK] 32ダメージ 脆弱4' },
     ],
-    ai(e){ const seq=[0,1,1,2,0,1,2]; e.nextMove=seq[e.turn%seq.length]; }
+    ai(e){ const seq=[0,1,1,2,3,1,2]; e.nextMove=seq[e.turn%seq.length]; }
   },
   corruptHeart:{
     name:'ダークロード', spriteKey:'deniedSelf', hp:[750,750], act:3, type:'boss',
     patterns:[
-      { name:'収縮', type:'attack', damage:2, hits:4, desc:'[ATK] 2×4ダメージ' },
-      { name:'鼓動', type:'buff', strength:2, block:8, desc:'[BUFF] 強さ+2 / [DEF] +8' },
-      { name:'腐敗撃', type:'attack', damage:60, desc:'[ATK] 60ダメージ' },
+      { name:'血の弾丸', type:'attack', damage:20, times:3, desc:'[ATK] 20ダメージ×3回' },
+      { name:'鼓動', type:'attack', damage:55, strength:4, desc:'[ATK] 55ダメージ 強さ+4' },
+      { name:'不整脈', type:'attack', damage:22, desc:'[ATK] 22ダメージ' },
     ],
     ai(e){ const seq=[0,1,0,1,2]; e.nextMove=seq[e.turn%seq.length]; }
   },
+};
+
+// Enemy encounter groups
+const ENCOUNTER_GROUPS = {
+  1: [
+    ['slimeSmall'],
+    ['slimeSmall','slimeSmall'],
+    ['louse','louse'],
+    ['jawWorm'],
+    ['cultist'],
+    ['jawWorm','louse'],
+    ['slimeSmall','louse'],
+  ],
+  2: [
+    ['spikeSlime'],
+    ['fungi'],
+    ['spikeSlime','spikeSlime'],
+    ['fungi','spikeSlime'],
+    ['champ'],
+  ],
+  3: [
+    ['fungi','cultist'],
+    ['jawWorm','spikeSlime'],
+    ['cultist','cultist'],
+  ],
 };
 
 // ============================================================
@@ -1419,16 +1494,24 @@ function enterNode(node){
   }
 }
 
-function getCombatEnemy(elite){
+function getCombatEnemy(isElite){
   const act=GS.act;
-  const pool=Object.values(ENEMY_DB).filter(e=>e.act===act&&(elite?e.type==='elite':e.type==='normal'));
-  if(!pool.length) return ENEMY_DB.slimeSmall;
-  return pool[Math.floor(Math.random()*pool.length)];
+  if(isElite){
+    const elites=Object.values(ENEMY_DB).filter(e=>e.act===act&&e.type==='elite');
+    return [elites[Math.floor(Math.random()*elites.length)]||ENEMY_DB.gremlinNob];
+  }
+  const groups=ENCOUNTER_GROUPS[act]||ENCOUNTER_GROUPS[1];
+  const group=groups[Math.floor(Math.random()*groups.length)];
+  return group.map(id=>ENEMY_DB[id]).filter(Boolean);
 }
 
 function getBossEnemy(){
   const bossMap={ 1:'slimeBoss', 2:'rottingHeart', 3:'corruptHeart' };
-  return ENEMY_DB[bossMap[GS.act]]||ENEMY_DB.slimeBoss;
+  return [ENEMY_DB[bossMap[GS.act]]||ENEMY_DB.slimeBoss];
+}
+
+function getFirstLivingEnemyIdx(){
+  return CS.enemies.findIndex(e=>e.hp>0);
 }
 
 // ============================================================
@@ -1436,25 +1519,39 @@ function getBossEnemy(){
 // ============================================================
 let CS=null;
 
-function startCombat(enemyTemplate){
+function startCombat(enemyTemplates){
+  if(!Array.isArray(enemyTemplates)) enemyTemplates=[enemyTemplates];
   showScreen('combat');
-  const hpRoll=rand(enemyTemplate.hp[0],enemyTemplate.hp[1]);
 
   CS={
     player:{ hp:GS.hp, maxHp:GS.maxHp, block:0, statuses:{}, tempStrength:0, corruption:false },
-    enemy:{
-      name:enemyTemplate.name, spriteKey:enemyTemplate.spriteKey,
-      hp:hpRoll, maxHp:hpRoll, block:0, statuses:{},
-      nextMove:0, turn:0, template:enemyTemplate,
-    },
+    enemies:enemyTemplates.map(t=>({
+      name:t.name,
+      spriteKey:t.spriteKey,
+      hp:rand(t.hp[0],t.hp[1]),
+      maxHp:0,
+      block:0,
+      statuses:{},
+      nextMove:0,
+      turn:0,
+      template:t,
+    })),
+    targetEnemy:0,
     drawPile:shuffle([...GS.deck.map(c=>cloneCard(c))]),
     discardPile:[], exhaustPile:[], hand:[],
     energy:3, maxEnergy:3, turn:1,
     selectedCard:null, log:[],
-    isElite:enemyTemplate.type==='elite',
-    isBoss:enemyTemplate.type==='boss',
+    isElite:enemyTemplates.some(t=>t.type==='elite'),
+    isBoss:enemyTemplates.some(t=>t.type==='boss'),
     combatEnded:false,
   };
+
+  CS.enemies.forEach(e=>{ e.maxHp=e.hp; });
+
+  Object.defineProperty(CS,'enemy',{
+    get(){ return this.enemies[this.targetEnemy]; },
+    configurable:true,
+  });
 
   // Apply permanent buffs
   if(GS.permanentBuffs){
@@ -1463,19 +1560,10 @@ function startCombat(enemyTemplate){
     }
   }
 
-  enemyTemplate.ai(CS.enemy);
-
-  // Update player sprite
-  document.getElementById('player-art').textContent=SPRITES.player;
-  document.getElementById('player-art').style.color=SPRITE_COLORS.player;
-  document.getElementById('player-art').style.textShadow=`0 0 6px ${SPRITE_COLORS.player}`;
-
-  // Update enemy sprite
-  updateEnemySprite();
+  CS.enemies.forEach(e=>e.template.ai(e));
 
   document.getElementById('floor-info').textContent=`${ACT_NAMES[GS.act]} 第${GS.floor}層`;
 
-  // Boss lore
   if(CS.isBoss){
     SFX.boss();
     const loreEl=document.getElementById('boss-lore');
@@ -1484,21 +1572,76 @@ function startCombat(enemyTemplate){
     setTimeout(()=>{ loreEl.style.display='none'; },3000);
   }
 
+  renderEnemies();
   drawCards(CS,5);
   updateCombatUI();
-  addLog(`戦闘開始: ${CS.enemy.name}`);
+  addLog(`戦闘開始: ${CS.enemies.map(e=>e.name).join(' / ')}`);
 }
 
-function updateEnemySprite(){
-  const key=CS.enemy.spriteKey||'shadowFragment';
-  const isBoss=CS.isBoss;
-  const art=document.getElementById('enemy-art');
-  const col=SPRITE_COLORS[key]||'#ff4444';
-  const glow=isBoss?`0 0 12px ${col}`:(`0 0 6px ${col}`);
-  art.textContent=SPRITES[key]||SPRITES.shadowFragment;
-  art.style.color=col;
-  art.style.textShadow=glow;
-  document.getElementById('enemy-name-display').textContent=CS.enemy.name;
+function renderStatusBadgesHTML(statuses){
+  const names={ strength:'[強]',dexterity:'[敏]',vulnerable:'[脆]',weak:'[弱]',poison:'[毒]',metallicize:'[金]',rage:'[怒]' };
+  const cls={ strength:'strength',dexterity:'dexterity',vulnerable:'vulnerable',weak:'weak',poison:'poison',metallicize:'metallicize',rage:'rage' };
+  let html='';
+  for(const [key,val] of Object.entries(statuses)){
+    if(val<=0) continue;
+    html+=`<div class="status-badge ${cls[key]||''}">${(names[key]||key)+val}</div>`;
+  }
+  return html;
+}
+
+function renderEnemies(){
+  if(!CS) return;
+  const area=document.getElementById('enemies-area');
+  if(!area) return;
+  area.innerHTML='';
+  CS.enemies.forEach((enemy,idx)=>{
+    if(enemy.hp<=0){
+      const dead=document.createElement('div');
+      dead.className='enemy-unit dead';
+      dead.innerHTML=`<pre style="font-size:13px;line-height:1.15;color:#330000;font-family:monospace;opacity:0.3;">×</pre>`;
+      area.appendChild(dead);
+      return;
+    }
+    const isTarget=idx===CS.targetEnemy;
+    const div=document.createElement('div');
+    div.className=`enemy-unit${isTarget?' targeted':''}`;
+    div.dataset.idx=idx;
+    div.onclick=()=>selectEnemy(idx);
+
+    const move=enemy.template.patterns[enemy.nextMove];
+    const intentText=move?move.desc||move.name:'？';
+    const intentType=move?move.type:'unknown';
+    const intentIcon=intentType.includes('attack')?'[ATK]':(intentType==='buff'||intentType==='ritual'?'[BUFF]':(intentType==='skip'?'[zzz]':'[?]'));
+
+    const hpPct=(enemy.hp/enemy.maxHp*100).toFixed(0);
+    const key=enemy.spriteKey||'shadowFragment';
+    const col=SPRITE_COLORS[key]||'#ff4444';
+    const glow=CS.isBoss?`0 0 12px ${col}`:`0 0 6px ${col}`;
+    const fontSize=CS.isBoss?'15':'12';
+
+    div.innerHTML=`
+      <div class="intent-box" style="font-size:7px;">
+        <span class="intent-icon">${intentIcon}</span><span>${intentText}</span>
+      </div>
+      <pre class="enemy-art" style="color:${col};text-shadow:${glow};font-family:monospace;font-size:${fontSize}px;line-height:1.1;white-space:pre;cursor:pointer;margin:0;">${SPRITES[key]||SPRITES.shadowFragment}</pre>
+      <div class="combatant-name" style="font-size:8px;color:#eeddff;text-align:center;margin-top:4px;">${enemy.name}</div>
+      <div class="hp-bar-wrap" style="width:120px;"><div class="hp-bar${CS.isBoss?' boss-hp':''}" style="width:${hpPct}%"></div></div>
+      <div class="hp-text" style="font-size:7px;text-align:center;">${enemy.hp}/${enemy.maxHp}</div>
+      ${enemy.block>0?`<div class="block-display" style="display:flex;">[DEF] ${enemy.block}</div>`:''}
+      <div class="status-row">${renderStatusBadgesHTML(enemy.statuses)}</div>
+    `;
+    area.appendChild(div);
+  });
+}
+
+function selectEnemy(idx){
+  if(!CS||CS.enemies[idx].hp<=0) return;
+  CS.targetEnemy=idx;
+  if(CS.selectedCard!==null){
+    playCard(CS.selectedCard);
+  }else{
+    renderEnemies();
+  }
 }
 
 function drawCards(cs,n){
@@ -1531,24 +1674,29 @@ function gainBlock(entity,amount){
   const dex=getStatus(entity,'dexterity');
   const actual=Math.max(0,amount+dex);
   entity.block+=actual;
-  showFloatNum(entity===CS.player?'player':'enemy',actual,'block');
+  const isPlayer=entity===CS.player;
+  const enemyIdx=isPlayer?-1:CS.enemies.indexOf(entity);
+  showFloatNumAt(isPlayer?document.getElementById('player-stats-bar'):(document.querySelector(`[data-idx="${enemyIdx}"] .enemy-art`)||document.getElementById('player-stats-bar')),actual,'block');
   SFX.block();
   updateCombatUI();
 }
 
 function dealDamage(cs,baseDmg){
+  dealDamageToTarget(cs,cs.enemy,baseDmg);
+}
+
+function dealDamageToTarget(cs,target,baseDmg){
   const str=getStatus(cs.player,'strength');
   let dmg=baseDmg+str;
   if(getStatus(cs.player,'weak')>0) dmg=Math.floor(dmg*0.75);
-  if(getStatus(cs.enemy,'vulnerable')>0) dmg=Math.floor(dmg*1.5);
+  if(getStatus(target,'vulnerable')>0) dmg=Math.floor(dmg*1.5);
   dmg=Math.max(0,dmg);
   const rageAmt=getStatus(cs.player,'rage');
   if(rageAmt>0) gainBlock(cs.player,rageAmt);
-  applyDamageToEntity(cs.enemy,dmg);
+  applyDamageToEntity(target,dmg);
   animateSprite('player','attack');
-  animateSprite('enemy','hit');
   SFX.attack();
-  addLog(`${CS.enemy.name}に${dmg}ダメージ`);
+  addLog(`${target.name}に${dmg}ダメージ`);
 }
 
 function takeDamageRaw(entity,dmg){ applyDamageToEntity(entity,dmg); }
@@ -1558,18 +1706,30 @@ function applyDamageToEntity(entity,dmg){
   entity.block-=blocked;
   const rem=dmg-blocked;
   entity.hp=Math.max(0,entity.hp-rem);
-  showFloatNum(entity===CS.player?'player':'enemy',dmg,'damage');
+  const isPlayer=entity===CS.player;
+  const enemyIdx=isPlayer?-1:CS.enemies.indexOf(entity);
+  const el=isPlayer
+    ?document.getElementById('player-stats-bar')
+    :(document.querySelector(`[data-idx="${enemyIdx}"] .enemy-art`)||null);
+  if(el) showFloatNumAt(el,dmg,'damage');
+  if(!isPlayer) renderEnemies();
   updateCombatUI();
-  if(entity===CS.enemy&&entity.hp<=0&&!CS.combatEnded){
-    CS.combatEnded=true;
-    setTimeout(()=>endCombat(true),800);
+  if(!isPlayer&&entity.hp<=0&&!CS.combatEnded){
+    // Auto-target next living enemy
+    const nextIdx=getFirstLivingEnemyIdx();
+    if(nextIdx>=0) CS.targetEnemy=nextIdx;
+    if(CS.enemies.every(e=>e.hp<=0)){
+      CS.combatEnded=true;
+      setTimeout(()=>endCombat(true),800);
+    }
   }
-  if(entity===CS.player&&entity.hp<=0&&!CS.combatEnded){
+  if(isPlayer&&entity.hp<=0&&!CS.combatEnded){
     CS.combatEnded=true;
     GS.hp=0;
     SFX.defeat();
     const floor=GS.floor;
-    const msg=floor<=1?'旅はまだ始まったばかりだ':('「お前はまだ、自己の迷宮から抜け出す準備ができていない」\n\n'+CS.enemy.name+'に倒された...');
+    const killer=CS.enemies.find(e=>e.hp>0);
+    const msg=floor<=1?'旅はまだ始まったばかりだ':('「お前はまだ、自己の迷宮から抜け出す準備ができていない」\n\n'+(killer?killer.name:'敵')+'に倒された...');
     setTimeout(()=>gameOver(msg),800);
   }
 }
@@ -1581,8 +1741,16 @@ function selectCard(idx){
   const cost=getEffectiveCost(card);
   if(CS.energy<cost){ addLog('エネルギーが足りない'); return; }
   if(CS.selectedCard===idx){ CS.selectedCard=null; renderHand(); return; }
-  if(card.type==='attack'){ CS.selectedCard=idx; renderHand(); }
-  else{ CS.selectedCard=null; playCard(idx); }
+  if(card.type==='attack'){
+    CS.selectedCard=idx;
+    renderHand();
+    // If only one living enemy, auto-play immediately
+    const living=CS.enemies.filter(e=>e.hp>0);
+    if(living.length===1){
+      CS.targetEnemy=CS.enemies.indexOf(living[0]);
+      playCard(idx);
+    }
+  }else{ CS.selectedCard=null; playCard(idx); }
 }
 
 function enemyClicked(){
@@ -1609,13 +1777,14 @@ function playCard(idx){
   if(exhaust) CS.exhaustPile.push(card);
   else CS.discardPile.push(card);
   renderHand();
+  renderEnemies();
   updateCombatUI();
   if(CS.combatEnded) return;
   checkCombatEnd();
 }
 
 function checkCombatEnd(){
-  if(CS.enemy.hp<=0&&!CS.combatEnded){
+  if(CS.enemies.every(e=>e.hp<=0)&&!CS.combatEnded){
     CS.combatEnded=true;
     setTimeout(()=>endCombat(true),500);
   }
@@ -1632,17 +1801,28 @@ function endTurn(){
     applyStatus(CS.player,'strength',-CS.player.tempStrength);
     CS.player.tempStrength=0;
   }
-  setTimeout(enemyTurn,400);
+  const livingEnemies=CS.enemies.filter(e=>e.hp>0);
+  setTimeout(()=>doEnemyTurns(livingEnemies,0,()=>{
+    if(!CS.combatEnded) startPlayerTurn();
+  }),400);
 }
 
-function enemyTurn(){
+function doEnemyTurns(enemies,idx,onDone){
+  if(idx>=enemies.length){ onDone(); return; }
+  const enemy=enemies[idx];
+  if(enemy.hp<=0||CS.combatEnded){ doEnemyTurns(enemies,idx+1,onDone); return; }
+  executeEnemyAction(enemy);
+  setTimeout(()=>doEnemyTurns(enemies,idx+1,onDone),900);
+}
+
+function executeEnemyAction(e){
   if(CS.combatEnded) return;
-  const e=CS.enemy;
   const move=e.template.patterns[e.nextMove];
   addLog(`${e.name}: ${move.name}`);
-  if(move.type==='attack'){
+  if(move.type==='attack'||move.type==='attackDebuff'){
     const hits=move.hits||1;
-    for(let i=0;i<hits;i++){
+    const times=move.times||hits;
+    for(let i=0;i<times;i++){
       let dmg=move.damage;
       const str=getStatus(e,'strength');
       dmg+=str;
@@ -1655,8 +1835,13 @@ function enemyTurn(){
     }
     if(move.vulnerable) applyStatus(CS.player,'vulnerable',move.vulnerable);
     if(move.weak) applyStatus(CS.player,'weak',move.weak);
+    if(move.type==='attackDebuff'&&move.effect){
+      if(move.effect==='weak') applyStatus(CS.player,'weak',move.amount||1);
+      if(move.effect==='vulnerable') applyStatus(CS.player,'vulnerable',move.amount||1);
+    }
   }else if(move.type==='buff'){
     if(move.strength) applyStatus(e,'strength',move.strength);
+    if(move.ritualAmount) applyStatus(e,'strength',move.ritualAmount);
     if(move.block) gainBlock(e,move.block);
   }else if(move.type==='debuff'){
     if(move.weak) applyStatus(CS.player,'weak',move.weak);
@@ -1671,12 +1856,9 @@ function enemyTurn(){
   }
   const poison=getStatus(e,'poison');
   if(poison>0){ applyDamageToEntity(e,poison); applyStatus(e,'poison',-1); }
-  const pPoison=getStatus(CS.player,'poison');
-  if(pPoison>0){ applyDamageToEntity(CS.player,pPoison); applyStatus(CS.player,'poison',-1); }
   e.block=0;
   e.turn++;
   e.template.ai(e);
-  setTimeout(startPlayerTurn,600);
 }
 
 function startPlayerTurn(){
@@ -1685,11 +1867,18 @@ function startPlayerTurn(){
   CS.energy=CS.maxEnergy;
   ['vulnerable','weak'].forEach(s=>{
     if(getStatus(CS.player,s)>0) applyStatus(CS.player,s,-1);
-    if(getStatus(CS.enemy,s)>0) applyStatus(CS.enemy,s,-1);
+    CS.enemies.forEach(e=>{ if(getStatus(e,s)>0) applyStatus(e,s,-1); });
+  });
+  // Poison tick on enemies
+  CS.enemies.forEach(e=>{
+    if(e.hp<=0) return;
+    const pPoison=getStatus(CS.player,'poison');
+    if(pPoison>0){ applyDamageToEntity(CS.player,pPoison); applyStatus(CS.player,'poison',-1); }
   });
   drawCards(CS,5);
   CS.turn++;
   document.getElementById('end-turn-btn').disabled=false;
+  renderEnemies();
   updateCombatUI();
   addLog(`--- ターン${CS.turn} ---`);
 }
@@ -1733,13 +1922,19 @@ function showRewardScreen(gold,isBoss){
     const wrap=document.createElement('div');
     wrap.className='reward-card-wrap';
     wrap.innerHTML=renderCardBig(card);
-    wrap.onclick=()=>{ GS.deck.push(card); SFX.gold(); afterReward(isBoss); };
+    wrap.onclick=()=>{
+      showConfirm(`「${card.name}」をデッキに加えますか？`,()=>{ GS.deck.push(card); SFX.gold(); afterReward(isBoss); });
+    };
     container.appendChild(wrap);
   });
   window._rewardIsBoss=isBoss;
 }
 
-function skipReward(){ afterReward(window._rewardIsBoss); }
+function skipReward(){
+  showConfirm('報酬をスキップしますか？',()=>{
+    showScreen('map'); renderMap();
+  });
+}
 
 function afterReward(isBoss){
   if(isBoss){
@@ -1768,19 +1963,24 @@ function setupRestScreen(){
 }
 
 function restHeal(){
-  const heal=Math.floor(GS.maxHp*0.3);
-  GS.hp=Math.min(GS.maxHp,GS.hp+heal);
-  showMessage(`HPを${heal}回復した！`,goBackToMap);
+  const healAmt=Math.floor(GS.maxHp*0.3);
+  showConfirm(`休息してHPを${healAmt}回復しますか？`,()=>{
+    GS.hp=Math.min(GS.maxHp,GS.hp+healAmt);
+    SFX.rest();
+    showScreen('map'); renderMap();
+  });
 }
 
 function restSmith(){
-  const upgradeable=GS.deck.filter(c=>!c.upgraded);
-  if(!upgradeable.length){ showMessage('アップグレード可能なカードがない',null); return; }
-  openCardPicker('アップグレードするカードを選ぶ',GS.deck.filter(c=>!c.upgraded),(c,i)=>{
-    const idx=GS.deck.findIndex(dc=>dc===c);
-    if(idx>=0) upgradeCard(GS.deck[idx]);
-    closeCardPicker();
-    showMessage(`${c.name}をアップグレードした！`,goBackToMap);
+  showConfirm('デッキのカードをアップグレードしますか？',()=>{
+    const upgradeable=GS.deck.filter(c=>!c.upgraded);
+    if(!upgradeable.length){ showMessage('アップグレード可能なカードがない',null); return; }
+    openCardPicker('アップグレードするカードを選ぶ',upgradeable,(c,i)=>{
+      upgradeCard(c);
+      closeCardPicker();
+      SFX.levelUp();
+      showScreen('map'); renderMap();
+    });
   });
 }
 
@@ -1822,21 +2022,25 @@ function buyCard(i){
   const item=shopInventory[i];
   if(item.sold) return;
   if(GS.gold<item.price){ showMessage('ゴールドが足りない！',null); return; }
-  GS.gold-=item.price;
-  GS.deck.push(item.card);
-  item.sold=true;
-  SFX.gold();
-  renderShop(); updateMapStats();
+  showConfirm(`「${item.card.name}」を${item.price}Gで購入しますか？`,()=>{
+    GS.gold-=item.price;
+    GS.deck.push(item.card);
+    item.sold=true;
+    SFX.gold();
+    renderShop(); updateMapStats();
+  });
 }
 
 function shopRemove(){
   if(GS.gold<75){ showMessage('ゴールドが足りない！(75必要)',null); return; }
-  openCardPicker('除外するカードを選ぶ',GS.deck,(c,i)=>{
-    GS.gold-=75;
-    GS.deck.splice(i,1);
-    closeCardPicker();
-    showMessage('カードを除外した',null);
-    updateMapStats();
+  showConfirm('75Gを払ってカードを除外しますか？',()=>{
+    openCardPicker('除外するカードを選ぶ',GS.deck,(c,i)=>{
+      GS.gold-=75;
+      GS.deck.splice(i,1);
+      closeCardPicker();
+      showMessage('カードを除外した',null);
+      updateMapStats();
+    });
   });
 }
 
@@ -1882,45 +2086,36 @@ function eventContinue(){
 // ============================================================
 function updateCombatUI(){
   if(!CS) return;
-  const p=CS.player; const e=CS.enemy;
+  const p=CS.player;
 
-  document.getElementById('player-hp-bar').style.width=(p.hp/p.maxHp*100)+'%';
-  document.getElementById('player-hp-text').textContent=`${p.hp}/${p.maxHp}`;
-  document.getElementById('combat-hp-top').textContent=`[HP] ${p.hp}/${p.maxHp}`;
-  document.getElementById('combat-gold-top').textContent=`[G] ${GS.gold}`;
+  const hpBarEl=document.getElementById('player-hp-bar');
+  if(hpBarEl) hpBarEl.style.width=(p.hp/p.maxHp*100)+'%';
+  const hpTextEl=document.getElementById('player-hp-text');
+  if(hpTextEl) hpTextEl.textContent=`${p.hp}/${p.maxHp}`;
+  const hpTopEl=document.getElementById('combat-hp-top');
+  if(hpTopEl) hpTopEl.textContent=`[HP] ${p.hp}/${p.maxHp}`;
+  const goldTopEl=document.getElementById('combat-gold-top');
+  if(goldTopEl) goldTopEl.textContent=`[G] ${GS.gold}`;
 
   const pb=document.getElementById('player-block-badge');
   const pv=document.getElementById('player-block-val');
-  pb.style.display=p.block>0?'inline-flex':'none';
+  if(pb) pb.style.display=p.block>0?'flex':'none';
   if(pv) pv.textContent=p.block;
 
-  const pct=e.hp/e.maxHp*100;
-  const bar=document.getElementById('enemy-hp-bar');
-  bar.style.width=pct+'%';
-  if(CS.isBoss) bar.classList.add('boss-hp');
-  document.getElementById('enemy-hp-text').textContent=`${e.name}: ${e.hp}/${e.maxHp}`;
+  const energyCurEl=document.getElementById('energy-cur');
+  if(energyCurEl) energyCurEl.textContent=CS.energy;
+  const energyMaxEl=document.getElementById('energy-max-val');
+  if(energyMaxEl) energyMaxEl.textContent=CS.maxEnergy;
 
-  const eb=document.getElementById('enemy-block-badge');
-  const ev=document.getElementById('enemy-block-val');
-  eb.style.display=e.block>0?'inline-flex':'none';
-  if(ev) ev.textContent=e.block;
-
-  // Intent
-  const move=e.template.patterns[e.nextMove];
-  if(move){
-    const intentIcons={ attack:'[ATK]', buff:'[BUFF]', debuff:'[DEBUFF]', defend:'[DEF]', special:'[SPECIAL]', skip:'[SKIP]' };
-    document.getElementById('enemy-intent').innerHTML=`<span class="intent-icon">${intentIcons[move.type]||'[?]'}</span><span id="intent-text">${move.desc||move.name}</span>`;
-  }
-
-  document.getElementById('energy-cur').textContent=CS.energy;
-  document.getElementById('energy-max-val').textContent=CS.maxEnergy;
-
-  document.getElementById('draw-count').textContent=CS.drawPile.length;
-  document.getElementById('discard-count').textContent=CS.discardPile.length;
-  document.getElementById('exhaust-count').textContent=CS.exhaustPile.length;
+  const drawEl=document.getElementById('draw-count');
+  if(drawEl) drawEl.textContent=CS.drawPile.length;
+  const discardEl=document.getElementById('discard-count');
+  if(discardEl) discardEl.textContent=CS.discardPile.length;
+  const exhaustEl=document.getElementById('exhaust-count');
+  if(exhaustEl) exhaustEl.textContent=CS.exhaustPile.length;
 
   renderStatusBadges('player-status-badges',p.statuses);
-  renderStatusBadges('enemy-status-badges',e.statuses);
+  renderEnemies();
 }
 
 function renderStatusBadges(elId,statuses){
@@ -1980,25 +2175,41 @@ function addLog(msg){
 }
 
 function animateSprite(who,anim){
-  const id=who==='player'?'player-sprite':'enemy-sprite';
-  const el=document.getElementById(id);
-  el.classList.remove('attack-anim','hit-anim');
-  void el.offsetWidth;
-  el.classList.add(anim+'-anim');
-  setTimeout(()=>el.classList.remove(anim+'-anim'),400);
+  if(who==='player'){
+    const el=document.getElementById('player-stats-bar');
+    if(!el) return;
+    el.classList.remove('attack-anim','hit-anim');
+    void el.offsetWidth;
+    el.classList.add(anim+'-anim');
+    setTimeout(()=>el.classList.remove(anim+'-anim'),400);
+  }else{
+    // Animate targeted enemy
+    const el=document.querySelector(`[data-idx="${CS.targetEnemy}"] .enemy-art`);
+    if(!el) return;
+    el.classList.remove('attack-anim','hit-anim');
+    void el.offsetWidth;
+    el.classList.add(anim+'-anim');
+    setTimeout(()=>el.classList.remove(anim+'-anim'),400);
+  }
 }
 
-function showFloatNum(who,num,type){
-  const el=document.getElementById(who==='player'?'player-combatant':'enemy-combatant');
+function showFloatNumAt(el,num,type){
   if(!el) return;
   const rect=el.getBoundingClientRect();
   const div=document.createElement('div');
   div.className=`float-num ${type}`;
   div.textContent=(type==='damage'?'-':'+')+num;
   div.style.left=(rect.left+rect.width/2-20)+'px';
-  div.style.top=(rect.top+30)+'px';
+  div.style.top=(rect.top+10)+'px';
   document.body.appendChild(div);
   setTimeout(()=>div.remove(),1000);
+}
+
+function showFloatNum(who,num,type){
+  const el=who==='player'
+    ?document.getElementById('player-stats-bar')
+    :(document.querySelector(`[data-idx="${CS.targetEnemy}"] .enemy-art`));
+  showFloatNumAt(el,num,type);
 }
 
 // ============================================================
@@ -2072,6 +2283,41 @@ function showMessage(msg,callback){
   }else{
     setTimeout(()=>{ overlay.style.display='none'; },2000);
   }
+}
+
+// ============================================================
+// CONFIRMATION DIALOG
+// ============================================================
+function showConfirm(msg,onYes,onNo){
+  SFX.select();
+  const modal=document.getElementById('confirm-modal');
+  document.getElementById('confirm-msg').textContent=msg;
+  document.getElementById('confirm-yes').onclick=()=>{
+    modal.style.display='none';
+    onYes();
+  };
+  document.getElementById('confirm-no').onclick=()=>{
+    modal.style.display='none';
+    if(onNo) onNo();
+  };
+  modal.style.display='flex';
+}
+
+// ============================================================
+// DECK VIEW
+// ============================================================
+function showDeckView(){
+  SFX.select();
+  const overlay=document.getElementById('deck-view-overlay');
+  const container=document.getElementById('deck-view-cards');
+  const sorted=[...GS.deck].sort((a,b)=>a.type.localeCompare(b.type)||a.name.localeCompare(b.name));
+  document.getElementById('deck-count-display').textContent=sorted.length;
+  container.innerHTML=sorted.map(c=>renderCardBig(c)).join('');
+  overlay.style.display='flex';
+}
+
+function hideDeckView(){
+  document.getElementById('deck-view-overlay').style.display='none';
 }
 
 // ============================================================
