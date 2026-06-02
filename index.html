@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>紅の書 — 集合的無意識への旅</title>
+<title>赤の書 — ダークラビリンス</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -31,9 +31,9 @@ body {
 
 /* ── BUTTONS ── */
 button {
-  border:4px solid #6600aa;
+  border:4px solid #aa0000;
   box-shadow:4px 4px 0 #000;
-  background:#1e0028;
+  background:#1a0000;
   font-family:'Press Start 2P', monospace;
   font-size:8px;
   color:#eeddff;
@@ -42,7 +42,7 @@ button {
   border-radius:0;
   transition:background 0.05s, color 0.05s;
 }
-button:hover { background:#6600aa; color:#ffcc00; }
+button:hover { background:#aa0000; color:#ffcc00; }
 button:active { transform:translate(4px,4px); box-shadow:none; }
 button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4px 4px 0 #000; }
 
@@ -56,8 +56,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   font-family:monospace;
   font-size:12px;
   line-height:1.2;
-  color:#aa44ff;
-  text-shadow:0 0 8px #6600aa;
+  color:#ff4444;
+  text-shadow:0 0 8px #aa0000;
   margin-bottom:24px;
   text-align:center;
   white-space:pre;
@@ -71,20 +71,20 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 }
 #title-sub {
   font-size:8px;
-  color:#664477;
+  color:#664444;
   margin-bottom:32px;
   letter-spacing:2px;
 }
 #title-story {
   font-size:8px;
-  color:#aa44ff;
+  color:#ff4444;
   line-height:2.2;
   text-align:center;
   max-width:480px;
   margin-bottom:32px;
-  border:4px solid #6600aa;
+  border:4px solid #aa0000;
   box-shadow:4px 4px 0 #000;
-  background:#0a0010;
+  background:#050000;
   padding:16px;
   min-height:60px;
 }
@@ -92,28 +92,28 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 
 /* ── MAP SCREEN ── */
 #map-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column; align-items:center;
 }
 #map-header {
   width:100%; padding:8px 16px;
   display:flex; justify-content:space-between; align-items:center;
-  background:#14001e;
-  border-bottom:4px solid #6600aa;
+  background:#110000;
+  border-bottom:4px solid #aa0000;
   box-shadow:0 4px 0 #000;
   flex-shrink:0;
 }
-#act-title { font-size:8px; color:#aa44ff; }
+#act-title { font-size:8px; color:#ff4444; }
 #map-stats { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .map-stat {
   font-size:7px; color:#eeddff;
-  border:2px solid #6600aa;
-  background:#14001e;
+  border:2px solid #aa0000;
+  background:#110000;
   padding:4px 8px;
 }
 .map-stat.hp-stat { border-color:#ff2200; }
 .map-stat.gold-stat { border-color:#ffcc00; color:#ffcc00; }
-.map-stat.deck-stat { border-color:#aa44ff; }
+.map-stat.deck-stat { border-color:#ff4444; }
 #map-hp-bar-wrap {
   width:80px; height:8px;
   background:#220000;
@@ -134,7 +134,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   width:52px; height:36px;
   border:4px solid #555;
   box-shadow:4px 4px 0 #000;
-  background:#14001e;
+  background:#110000;
   display:flex; align-items:center; justify-content:center;
   font-size:7px; cursor:pointer;
   position:relative; z-index:2;
@@ -142,7 +142,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   font-family:'Press Start 2P', monospace;
   transition:background 0.1s;
 }
-.map-node:hover:not(.visited):not(.locked) { background:#1e0028; }
+.map-node:hover:not(.visited):not(.locked) { background:#1a0000; }
 .map-node.available { border-color:#ffcc00; box-shadow:4px 4px 0 #000, 0 0 8px #ffcc0044; }
 .map-node.visited { opacity:0.35; cursor:default; border-color:#333; }
 .map-node.locked { opacity:0.25; cursor:default; }
@@ -157,19 +157,19 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 
 /* ── COMBAT SCREEN ── */
 #combat-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column;
 }
 #combat-top {
   display:flex; justify-content:space-between; align-items:center;
   padding:6px 12px;
-  background:#14001e;
-  border-bottom:4px solid #6600aa;
+  background:#110000;
+  border-bottom:4px solid #aa0000;
   flex-shrink:0; min-height:40px;
 }
-#floor-info { font-size:7px; color:#664477; }
+#floor-info { font-size:7px; color:#664444; }
 #combat-top-stats { display:flex; gap:8px; align-items:center; }
-.ct-stat { font-size:7px; border:2px solid #6600aa; background:#14001e; padding:3px 6px; }
+.ct-stat { font-size:7px; border:2px solid #aa0000; background:#110000; padding:3px 6px; }
 .ct-stat.hp { border-color:#ff2200; color:#ff2200; }
 .ct-stat.gold { border-color:#ffcc00; color:#ffcc00; }
 #combat-area {
@@ -186,8 +186,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   font-family:monospace;
   font-size:13px;
   line-height:1.15;
-  color:#aa44ff;
-  text-shadow:0 0 6px #6600aa;
+  color:#ff4444;
+  text-shadow:0 0 6px #aa0000;
   white-space:pre;
   margin:0;
 }
@@ -211,21 +211,21 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   padding:3px 6px;
   color:#0044ff;
 }
-.block-label { color:#664477; }
+.block-label { color:#664444; }
 .status-row { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; max-width:140px; }
 .status-badge {
   font-size:6px;
-  border:2px solid #6600aa;
-  background:#14001e;
+  border:2px solid #aa0000;
+  background:#110000;
   padding:2px 4px;
   color:#eeddff;
 }
 .status-badge.strength { border-color:#ff2200; color:#ff6644; }
 .status-badge.dexterity { border-color:#0044ff; color:#4488ff; }
 .status-badge.vulnerable { border-color:#ff6600; color:#ff9944; }
-.status-badge.weak { border-color:#aa44ff; color:#cc88ff; }
+.status-badge.weak { border-color:#ff4444; color:#cc88ff; }
 .status-badge.poison { border-color:#00aa33; color:#44cc66; }
-.status-badge.metallicize { border-color:#664477; color:#aa88bb; }
+.status-badge.metallicize { border-color:#664444; color:#aa88bb; }
 .status-badge.rage { border-color:#ff2200; color:#ff4422; }
 
 /* Energy */
@@ -243,8 +243,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 /* Intent */
 .intent-box {
   font-size:7px;
-  border:2px solid #6600aa;
-  background:#0a0010;
+  border:2px solid #aa0000;
+  background:#050000;
   padding:4px 6px;
   text-align:center;
   max-width:130px;
@@ -257,13 +257,13 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   position:absolute; left:8px; bottom:195px;
   width:160px; max-height:100px;
   overflow-y:auto;
-  background:#0a0010;
+  background:#050000;
   border:2px solid #333;
   padding:4px;
-  font-size:6px; color:#664477;
+  font-size:6px; color:#664444;
   pointer-events:none;
 }
-.log-entry { padding:1px 0; border-bottom:1px solid #1e0028; }
+.log-entry { padding:1px 0; border-bottom:1px solid #1a0000; }
 
 /* Float numbers */
 .float-num {
@@ -283,8 +283,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 #hand-area {
   display:flex; flex-direction:column; align-items:center;
   padding-bottom:4px;
-  background:#0a0010;
-  border-top:4px solid #6600aa;
+  background:#050000;
+  border-top:4px solid #aa0000;
   min-height:170px; flex-shrink:0;
 }
 #hand-row {
@@ -295,7 +295,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   width:82px; height:120px;
   border:4px solid #555;
   box-shadow:4px 4px 0 #000;
-  background:#14001e;
+  background:#110000;
   display:flex; flex-direction:column;
   padding:4px; cursor:pointer;
   transition:transform 0.12s;
@@ -308,7 +308,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 .card.unplayable:hover { transform:none; }
 .card-type-attack { border-color:#cc2200; background:#220000; }
 .card-type-skill { border-color:#0033cc; background:#00001a; }
-.card-type-power { border-color:#7700cc; background:#110022; }
+.card-type-power { border-color:#cc0000; background:#110000; }
 .card-cost {
   position:absolute; top:2px; left:3px;
   width:20px; height:20px;
@@ -321,19 +321,19 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 .card-name { font-size:6px; text-align:center; color:#eeddff; margin-top:18px; line-height:1.3; }
 .card-art-text {
   font-family:monospace; font-size:9px; line-height:1.2;
-  text-align:center; margin:2px 0; color:#664477;
+  text-align:center; margin:2px 0; color:#664444;
   white-space:pre; overflow:hidden;
 }
 .card-desc { font-size:5px; color:#aa88bb; text-align:center; line-height:1.4; flex:1; overflow:hidden; }
-.card-type-label { font-size:5px; text-align:center; color:#664477; border-top:1px solid #2a0040; padding-top:2px; margin-top:1px; }
-.card-flavor { font-size:5px; color:#664477; text-align:center; font-style:italic; line-height:1.3; margin-top:1px; overflow:hidden; }
+.card-type-label { font-size:5px; text-align:center; color:#664444; border-top:1px solid #2a0040; padding-top:2px; margin-top:1px; }
+.card-flavor { font-size:5px; color:#664444; text-align:center; font-style:italic; line-height:1.3; margin-top:1px; overflow:hidden; }
 
 /* BIG CARD (reward/shop) */
 .card-big {
   width:120px; height:175px;
   border:4px solid #555;
   box-shadow:4px 4px 0 #000;
-  background:#14001e;
+  background:#110000;
   display:flex; flex-direction:column;
   padding:6px;
   transition:transform 0.12s;
@@ -342,7 +342,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 .card-big:hover { transform:scale(1.04); }
 .card-big.card-type-attack { border-color:#cc2200; background:#220000; }
 .card-big.card-type-skill { border-color:#0033cc; background:#00001a; }
-.card-big.card-type-power { border-color:#7700cc; background:#110022; }
+.card-big.card-type-power { border-color:#cc0000; background:#110000; }
 .card-big .card-cost { width:24px; height:24px; font-size:10px; }
 .card-big .card-name { font-size:7px; margin-top:22px; }
 .card-big .card-art-text { font-size:10px; }
@@ -355,19 +355,19 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 #combat-bottom {
   display:flex; justify-content:space-between; align-items:center;
   padding:4px 10px;
-  background:#14001e;
+  background:#110000;
   border-top:4px solid #333;
   flex-shrink:0;
 }
 #pile-info { display:flex; gap:6px; }
-.pile-btn { font-size:6px; padding:6px 8px; border-color:#333; background:#0a0010; }
-.pile-btn:hover { background:#1e0028; border-color:#6600aa; color:#ffcc00; }
+.pile-btn { font-size:6px; padding:6px 8px; border-color:#333; background:#050000; }
+.pile-btn:hover { background:#1a0000; border-color:#aa0000; color:#ffcc00; }
 #end-turn-btn { border-color:#00aa33; font-size:8px; padding:10px 14px; }
 #end-turn-btn:hover { background:#00aa33; color:#000; }
 
 /* REWARD SCREEN */
 #reward-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column; align-items:center; justify-content:center; gap:16px;
 }
 #reward-screen h2 { font-size:16px; color:#ffcc00; text-shadow:4px 4px 0 #000; }
@@ -380,11 +380,11 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 }
 #reward-cards { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
 .reward-card-wrap { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; }
-.skip-btn { font-size:8px; padding:10px 20px; border-color:#664477; }
+.skip-btn { font-size:8px; padding:10px 20px; border-color:#664444; }
 
 /* REST SCREEN */
 #rest-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column; align-items:center; justify-content:center; gap:20px;
 }
 #rest-screen h2 { font-size:16px; color:#00aa33; text-shadow:4px 4px 0 #000; }
@@ -402,7 +402,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 }
 .rest-options { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
 .rest-option {
-  background:#14001e;
+  background:#110000;
   border:4px solid #444;
   box-shadow:4px 4px 0 #000;
   padding:16px 20px; text-align:center; cursor:pointer;
@@ -412,12 +412,12 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 .rest-option:hover { border-color:#00aa33; background:#0a1a0a; }
 .rest-icon { font-size:8px; margin-bottom:8px; color:#00aa33; }
 .rest-name { font-size:8px; color:#eeddff; margin-bottom:4px; }
-.rest-desc { font-size:6px; color:#664477; }
-#rest-hp-info { font-size:8px; color:#aa44ff; }
+.rest-desc { font-size:6px; color:#664444; }
+#rest-hp-info { font-size:8px; color:#ff4444; }
 
 /* SHOP SCREEN */
 #shop-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column; align-items:center; padding:16px; overflow-y:auto;
 }
 #shop-screen h2 { font-size:14px; color:#ffcc00; text-shadow:4px 4px 0 #000; margin-bottom:12px; }
@@ -431,7 +431,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   padding:3px 8px;
 }
 .shop-item.sold-out .card-big { opacity:0.35; }
-.shop-item.sold-out .shop-price { color:#664477; border-color:#333; }
+.shop-item.sold-out .shop-price { color:#664444; border-color:#333; }
 #shop-remove {
   background:#140000;
   border:4px solid #ff2200;
@@ -441,39 +441,39 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   font-size:7px; color:#ff2200;
 }
 #shop-remove:hover { background:#2d0000; }
-#shop-remove small { font-size:6px; color:#664477; display:block; margin-top:4px; }
+#shop-remove small { font-size:6px; color:#664444; display:block; margin-top:4px; }
 #shop-leave { margin-top:8px; }
 
 /* EVENT SCREEN */
 #event-screen {
-  background:#0a0010;
+  background:#050000;
   flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:20px;
   overflow-y:auto;
 }
-#event-screen h2 { font-size:12px; color:#aa44ff; text-shadow:4px 4px 0 #000; }
+#event-screen h2 { font-size:12px; color:#ff4444; text-shadow:4px 4px 0 #000; }
 #event-art {
   font-family:monospace; font-size:12px; line-height:1.2;
-  color:#6600aa; text-align:center; white-space:pre;
+  color:#aa0000; text-align:center; white-space:pre;
 }
 #event-desc {
   max-width:480px; text-align:center;
   color:#aa88bb; font-size:7px; line-height:2;
-  border:2px solid #6600aa; background:#0a0010; padding:12px;
+  border:2px solid #aa0000; background:#050000; padding:12px;
 }
 #event-choices { display:flex; flex-direction:column; gap:6px; width:100%; max-width:480px; }
 .event-choice {
-  background:#14001e;
-  border:4px solid #6600aa;
+  background:#110000;
+  border:4px solid #aa0000;
   box-shadow:4px 4px 0 #000;
   padding:10px 14px; cursor:pointer;
   text-align:left; font-family:'Press Start 2P', monospace;
   font-size:7px; color:#eeddff; border-radius:0;
 }
-.event-choice:hover { background:#6600aa; color:#ffcc00; }
+.event-choice:hover { background:#aa0000; color:#ffcc00; }
 .event-choice:active { transform:translate(4px,4px); box-shadow:none; }
 .event-result {
-  background:#0a0010;
-  border:4px solid #aa44ff;
+  background:#050000;
+  border:4px solid #ff4444;
   box-shadow:4px 4px 0 #000;
   padding:12px; max-width:480px;
   text-align:center; color:#eeddff;
@@ -481,7 +481,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 }
 .event-result.good { border-color:#00aa33; color:#00cc44; }
 .event-result.bad { border-color:#ff2200; color:#ff4422; }
-.event-result.neutral { border-color:#664477; }
+.event-result.neutral { border-color:#664444; }
 #event-continue { margin-top:4px; }
 
 /* CARD PICKER */
@@ -515,8 +515,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 }
 #gameover-screen h1 { font-size:24px; color:#ff2200; text-shadow:4px 4px 0 #000; }
 #win-screen h1 { font-size:24px; color:#ffcc00; text-shadow:4px 4px 0 #000; }
-#gameover-msg { font-size:7px; color:#664477; text-align:center; max-width:400px; line-height:2.2; }
-#win-msg { font-size:7px; color:#aa44ff; text-align:center; max-width:400px; line-height:2.2; }
+#gameover-msg { font-size:7px; color:#664444; text-align:center; max-width:400px; line-height:2.2; }
+#win-msg { font-size:7px; color:#ff4444; text-align:center; max-width:400px; line-height:2.2; }
 #gameover-deco, #win-deco {
   font-family:monospace; font-size:12px; line-height:1.2;
   white-space:pre; text-align:center;
@@ -532,8 +532,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
   flex-direction:column; gap:12px;
 }
 .msg-box {
-  background:#14001e;
-  border:4px solid #6600aa;
+  background:#110000;
+  border:4px solid #aa0000;
   box-shadow:4px 4px 0 #000;
   padding:20px; max-width:400px;
   text-align:center; color:#eeddff;
@@ -543,7 +543,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 /* Boss lore banner */
 #boss-lore {
   position:absolute; top:45px; left:50%; transform:translateX(-50%);
-  background:#0a0010;
+  background:#050000;
   border:4px solid #ff2200;
   box-shadow:4px 4px 0 #000;
   padding:8px 12px; z-index:50;
@@ -554,8 +554,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 
 /* Scrollbar */
 ::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:#0a0010; }
-::-webkit-scrollbar-thumb { background:#6600aa; }
+::-webkit-scrollbar-track { background:#050000; }
+::-webkit-scrollbar-thumb { background:#aa0000; }
 
 /* Mobile */
 @media (max-width:600px) {
@@ -582,17 +582,17 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 ██▓░  ▀▀  ░▓██
  ██▓▓░░░░▓▓██
   ▀▀▀▀▀▀▀▀▀▀</pre>
-  <div id="title-main">紅の書</div>
-  <div id="title-sub">集合的無意識への旅</div>
+  <div id="title-main">赤の書</div>
+  <div id="title-sub">ダークラビリンス</div>
   <div id="title-story"></div>
   <button id="title-start-btn" onclick="startGame()">ゲーム開始</button>
-  <div style="margin-top:16px;font-size:6px;color:#664477;">カードをクリックして選択 / 敵をクリックで攻撃</div>
+  <div style="margin-top:16px;font-size:6px;color:#664444;">カードをクリックして選択 / 敵をクリックで攻撃</div>
 </div>
 
 <!-- MAP SCREEN -->
 <div id="map-screen" class="screen">
   <div id="map-header">
-    <div id="act-title">第一層 ── 浅層の迷宮</div>
+    <div id="act-title">第一層 ── 地下牢獄</div>
     <div id="map-stats">
       <div class="map-stat hp-stat" id="map-hp">[HP] 80/80</div>
       <div class="map-stat gold-stat" id="map-gold">[G] 0</div>
@@ -637,7 +637,7 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
     <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
       <div id="energy-display">
         <div class="energy-label">[ENERGY]</div>
-        <div class="energy-val"><span id="energy-cur">3</span><span style="font-size:10px;color:#664477;">/<span id="energy-max-val">3</span></span></div>
+        <div class="energy-val"><span id="energy-cur">3</span><span style="font-size:10px;color:#664444;">/<span id="energy-max-val">3</span></span></div>
       </div>
       <div id="combat-log"></div>
     </div>
@@ -752,8 +752,8 @@ button:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:4p
 ██▓░▀▀░▓██
  ██▓▓▓▓██
   ▀████▀  </pre>
-  <h1>個性化完成</h1>
-  <div id="win-msg">「個性化が完成した——お前はついに自己の核と対峙し、統合を成し遂げた」</div>
+  <h1>勝利！</h1>
+  <div id="win-msg">「ダークロードを倒し、迷宮の最深部に光が差し込んだ——お前の勝利だ」</div>
   <button onclick="startGame()">もう一度プレイ</button>
 </div>
 
@@ -841,7 +841,7 @@ const SPRITES = {
 };
 
 const SPRITE_COLORS = {
-  player:'#aa44ff',
+  player:'#ff4444',
   shadowFragment:'#8822cc',
   jealousyWorm:'#cc2200',
   angerWorm:'#cc2200',
@@ -860,7 +860,7 @@ const SPRITE_COLORS = {
 };
 
 function spriteHtml(key, isBoss){
-  const col = SPRITE_COLORS[key]||'#aa44ff';
+  const col = SPRITE_COLORS[key]||'#ff4444';
   const glow = isBoss ? `0 0 12px ${col}` : `0 0 6px ${col}`;
   return `<pre style="font-family:monospace;font-size:13px;line-height:1.15;color:${col};text-shadow:${glow};white-space:pre;margin:0;">${SPRITES[key]||SPRITES.shadowFragment}</pre>`;
 }
@@ -959,7 +959,7 @@ const CARD_DB = {
     desc:'アタックプレイ毎に3ブロック獲得', flavor:'怒りを制御する者が、真の力を持つ', upgraded:false,
     effect(gs){ applyStatus(gs.player,'rage',3); } },
   limitBreak:{ id:'limitBreak', name:'限界突破', type:'power', cost:1,
-    desc:'強さを2倍にする（消費）', flavor:'個性化の炎——仮面の奥で燃え続ける', upgraded:false, exhaust:true,
+    desc:'強さを2倍にする（消費）', flavor:'限界を超えた時、真の力が解き放たれる', upgraded:false, exhaust:true,
     effect(gs){ const s=getStatus(gs.player,'strength'); applyStatus(gs.player,'strength',s); } },
   corruption:{ id:'corruption', name:'堕落', type:'power', cost:3,
     desc:'スキルのコストが0になる（消費）', flavor:'影を統合せよ。それが真の力の源だ', upgraded:false,
@@ -996,7 +996,7 @@ const UPGRADE_MAP = {
 // ============================================================
 const ENEMY_DB = {
   slimeSmall:{
-    name:'影の欠片', spriteKey:'shadowFragment', hp:[13,17], act:1, type:'normal',
+    name:'スライム', spriteKey:'shadowFragment', hp:[13,17], act:1, type:'normal',
     patterns:[
       { name:'暗打', type:'attack', damage:5, desc:'[ATK] 5ダメージ' },
       { name:'飛び掛かり', type:'attack', damage:8, desc:'[ATK] 8ダメージ' },
@@ -1004,7 +1004,7 @@ const ENEMY_DB = {
     ai(e){ e.nextMove=e.turn%2===0?0:1; }
   },
   jawWorm:{
-    name:'記憶の顎', spriteKey:'memoryJaw', hp:[40,44], act:1, type:'normal',
+    name:'マンディブル', spriteKey:'memoryJaw', hp:[40,44], act:1, type:'normal',
     patterns:[
       { name:'噛みつき', type:'attack', damage:11, desc:'[ATK] 11ダメージ' },
       { name:'叩きつけ', type:'attack', damage:7, block:5, desc:'[ATK] 7 / [DEF] +5' },
@@ -1013,7 +1013,7 @@ const ENEMY_DB = {
     ai(e){ const r=Math.random(); if(r<0.45) e.nextMove=0; else if(r<0.8) e.nextMove=1; else e.nextMove=2; }
   },
   cultist:{
-    name:'迷える自我', spriteKey:'lostEgo', hp:[48,54], act:1, type:'normal',
+    name:'ダークプリースト', spriteKey:'lostEgo', hp:[48,54], act:1, type:'normal',
     patterns:[
       { name:'呪文詠唱', type:'buff', strength:3, desc:'[BUFF] 儀式(強さ+3)' },
       { name:'暗黒打', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
@@ -1021,7 +1021,7 @@ const ENEMY_DB = {
     ai(e){ e.nextMove=e.turn===0?0:1; }
   },
   louse:{
-    name:'嫉妬の虫', spriteKey:'jealousyWorm', hp:[11,17], act:1, type:'normal',
+    name:'グリーンスライム', spriteKey:'jealousyWorm', hp:[11,17], act:1, type:'normal',
     patterns:[
       { name:'噛みつき', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
       { name:'糸吐き', type:'debuff', weak:2, desc:'[DEBUFF] 弱体2' },
@@ -1029,7 +1029,7 @@ const ENEMY_DB = {
     ai(e){ e.nextMove=e.turn%3===2?1:0; }
   },
   gremlins:{
-    name:'ペルソナの番人', spriteKey:'personaGuard', hp:[82,87], act:1, type:'elite',
+    name:'ホブゴブリン', spriteKey:'personaGuard', hp:[82,87], act:1, type:'elite',
     patterns:[
       { name:'怒号', type:'buff', strength:2, desc:'[BUFF] 強さ+2' },
       { name:'突撃', type:'attack', damage:16, desc:'[ATK] 16ダメージ' },
@@ -1038,7 +1038,7 @@ const ENEMY_DB = {
     ai(e){ const seq=[0,1,1,2,0,1,1]; e.nextMove=seq[e.turn%seq.length]; }
   },
   slimeBoss:{
-    name:'個人的無意識', spriteKey:'personalUnconscious', hp:[140,140], act:1, type:'boss',
+    name:'スライムキング', spriteKey:'personalUnconscious', hp:[140,140], act:1, type:'boss',
     patterns:[
       { name:'意識の侵食', type:'special', desc:'[SPECIAL] 粘液カード追加' },
       { name:'防御壁', type:'defend', block:15, desc:'[DEF] +15' },
@@ -1047,7 +1047,7 @@ const ENEMY_DB = {
     ai(e){ const seq=[0,1,2,1,2]; e.nextMove=seq[e.turn%seq.length]; }
   },
   spikeSlime:{
-    name:'不安の塊', spriteKey:'anxietyBlob', hp:[28,38], act:2, type:'normal',
+    name:'スパイクスライム', spriteKey:'anxietyBlob', hp:[28,38], act:2, type:'normal',
     patterns:[
       { name:'タックル', type:'attack', damage:8, desc:'[ATK] 8ダメージ' },
       { name:'不安伝播', type:'attack', damage:6, desc:'[ATK] 6ダメージ+粘液' },
@@ -1055,7 +1055,7 @@ const ENEMY_DB = {
     ai(e){ e.nextMove=e.turn%2===0?0:1; }
   },
   fungiBeast:{
-    name:'複合感情', spriteKey:'complexEmotion', hp:[65,75], act:2, type:'normal',
+    name:'デスシュルーム', spriteKey:'complexEmotion', hp:[65,75], act:2, type:'normal',
     patterns:[
       { name:'胞子雲', type:'buff', strength:2, desc:'[BUFF] 強さ+2' },
       { name:'噛みつき', type:'attack', damage:6, desc:'[ATK] 6ダメージ' },
@@ -1063,7 +1063,7 @@ const ENEMY_DB = {
     ai(e){ e.nextMove=e.turn%3===0?0:1; }
   },
   rottingHeart:{
-    name:'影の守門者', spriteKey:'shadowGatekeeper', hp:[300,300], act:2, type:'boss',
+    name:'シャドウドラゴン', spriteKey:'shadowGatekeeper', hp:[300,300], act:2, type:'boss',
     patterns:[
       { name:'弱体化', type:'debuff', weak:2, desc:'[DEBUFF] 弱体化2' },
       { name:'血飛沫', type:'attack', damage:12, hits:2, desc:'[ATK] 12×2ダメージ' },
@@ -1072,7 +1072,7 @@ const ENEMY_DB = {
     ai(e){ const seq=[0,1,1,2,0,1,2]; e.nextMove=seq[e.turn%seq.length]; }
   },
   corruptHeart:{
-    name:'否定された自己', spriteKey:'deniedSelf', hp:[750,750], act:3, type:'boss',
+    name:'ダークロード', spriteKey:'deniedSelf', hp:[750,750], act:3, type:'boss',
     patterns:[
       { name:'収縮', type:'attack', damage:2, hits:4, desc:'[ATK] 2×4ダメージ' },
       { name:'鼓動', type:'buff', strength:2, block:8, desc:'[BUFF] 強さ+2 / [DEF] +8' },
@@ -1186,7 +1186,7 @@ const EVENT_DB = [
       { text:'影を受け入れる', result(){
         if(Math.random()<0.55){
           applyPermanentBuff('strength',3);
-          return { type:'good', msg:'影との統合。ユングが言う「個性化」の第一歩。\n> 強さ +3（永続）' };
+          return { type:'good', msg:'影の力を取り込み、戦闘力が増した。\n> 強さ +3（永続）' };
         }else{
           GS.hp=Math.max(1,GS.hp-25);
           return { type:'bad', msg:'影があなたを飲み込もうとした。辛くも逃れた。\n> HP -25' };
@@ -1317,13 +1317,13 @@ const NODE_WEIGHTS={
   2:{ combat:0.35, elite:0.12, rest:0.15, shop:0.1, event:0.28 },
   3:{ combat:0.3, elite:0.1, rest:0.2, shop:0.1, event:0.3 },
 };
-const ACT_NAMES={ 1:'第一層 ── 浅層の迷宮', 2:'第二層 ── 影の回廊', 3:'第三層 ── 自己の核' };
+const ACT_NAMES={ 1:'第一層 ── 地下牢獄', 2:'第二層 ── 古城の回廊', 3:'第三層 ── 深淵の核' };
 const NODE_LABELS={ combat:'[戦]', elite:'[精]', rest:'[休]', shop:'[店]', event:'[?]', boss:'[BOSS]' };
 
 const BOSS_LORE={
-  1:'「個人的無意識よ——お前の全ての抑圧が形を成した存在だ」',
-  2:'「影の守門者よ——これを超えなければ深層には至れない」',
-  3:'「否定された自己よ——これがお前の本当の姿だ。受け入れよ」',
+  1:'「スライムキングよ——地下牢の支配者よ、その巨躯で挑め」',
+  2:'「シャドウドラゴンよ——影の回廊の番竜よ、その炎を放て」',
+  3:'「ダークロードよ——深淵の支配者よ、決着をつける時だ」',
 };
 
 function generateMap(act){
@@ -1493,7 +1493,7 @@ function updateEnemySprite(){
   const key=CS.enemy.spriteKey||'shadowFragment';
   const isBoss=CS.isBoss;
   const art=document.getElementById('enemy-art');
-  const col=SPRITE_COLORS[key]||'#aa44ff';
+  const col=SPRITE_COLORS[key]||'#ff4444';
   const glow=isBoss?`0 0 12px ${col}`:(`0 0 6px ${col}`);
   art.textContent=SPRITES[key]||SPRITES.shadowFragment;
   art.style.color=col;
@@ -2037,7 +2037,7 @@ function showPile(type){
   document.getElementById('pile-viewer-title').textContent=title;
   const list=document.getElementById('pile-viewer-list');
   list.innerHTML='';
-  if(!cards.length){ list.innerHTML='<div style="color:#664477;font-size:8px;">カードなし</div>'; }
+  if(!cards.length){ list.innerHTML='<div style="color:#664444;font-size:8px;">カードなし</div>'; }
   cards.forEach(card=>{
     const div=document.createElement('div');
     div.innerHTML=renderCardBig(card);
